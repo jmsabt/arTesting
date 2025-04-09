@@ -3,13 +3,16 @@ package com.example.arlearner2.ui.theme.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable
-object HomeScreen
+data object HomeScreen
 
 @Serializable
-object AboutScreen
+data object GalleryScreen
 
 @Serializable
-data class ARScreen(val model: String)
+data class ARScreen(val modelPath: String)
 
 @Serializable
-object GalleryScreen
+data object ARCameraScreen
+
+@Serializable
+data object AboutScreen

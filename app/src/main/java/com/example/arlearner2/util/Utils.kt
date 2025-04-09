@@ -14,8 +14,6 @@ import io.github.sceneview.node.ModelNode
 
 object Utils {
 
-    // Removed alphabets map and getAlphabet function
-
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     fun createAnchorNode(
         engine: Engine,
@@ -23,16 +21,17 @@ object Utils {
         materialLoader: MaterialLoader,
         modelInstance: MutableList<ModelInstance>,
         anchor: Anchor,
-        modelPath: String // Changed from model to modelPath for clarity
+        modelPath: String,
+        scale: Float = 1f // Default scale is 1, adjustable for ARCameraScreen
     ): AnchorNode {
         val anchorNode = AnchorNode(engine = engine, anchor = anchor)
         val modelNode = ModelNode(
             modelInstance = modelInstance.apply {
                 if (isEmpty()) {
-                    this += modelLoader.createInstancedModel(modelPath, 10) // Use modelPath directly
+                    this += modelLoader.createInstancedModel(modelPath, 10)
                 }
             }.removeLast(),
-            scaleToUnits = 1f
+            scaleToUnits = scale
         ).apply {
             isEditable = true
         }

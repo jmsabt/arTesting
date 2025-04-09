@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.arlearner2.ui.theme.navigation.AboutScreen
+import com.example.arlearner2.ui.theme.navigation.ARCameraScreen
 import com.example.arlearner2.ui.theme.navigation.GalleryScreen
 
 @Composable
@@ -19,7 +20,7 @@ fun HomeScreen(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onClick = { /* TO BE ADDED LATER */ }) {
+        Button(onClick = { navController.navigate(ARCameraScreen) }) {
             Text(text = "AR Camera")
         }
         Button(onClick = { navController.navigate(GalleryScreen) }) {
