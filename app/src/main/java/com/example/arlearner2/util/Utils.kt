@@ -14,18 +14,7 @@ import io.github.sceneview.node.ModelNode
 
 object Utils {
 
-    val alphabets = mapOf(
-        "A" to "1_meter_cube.glb",
-        "B" to "cabinet1.glb",
-        "C" to "chair1.glb",
-        "D" to "chair2.glb",
-        "E" to "Duck.glb"
-    )
-
-    fun getAlphabet(alphabet: String): String {
-        val modelName = alphabets[alphabet] ?: error("Model not Found")
-        return "models/$modelName"
-    }
+    // Removed alphabets map and getAlphabet function
 
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     fun createAnchorNode(
@@ -34,13 +23,13 @@ object Utils {
         materialLoader: MaterialLoader,
         modelInstance: MutableList<ModelInstance>,
         anchor: Anchor,
-        model: String
+        modelPath: String // Changed from model to modelPath for clarity
     ): AnchorNode {
         val anchorNode = AnchorNode(engine = engine, anchor = anchor)
         val modelNode = ModelNode(
             modelInstance = modelInstance.apply {
                 if (isEmpty()) {
-                    this += modelLoader.createInstancedModel(model, 10)
+                    this += modelLoader.createInstancedModel(modelPath, 10) // Use modelPath directly
                 }
             }.removeLast(),
             scaleToUnits = 1f

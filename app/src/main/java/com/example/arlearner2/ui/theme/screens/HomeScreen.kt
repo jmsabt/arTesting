@@ -9,22 +9,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.example.arlearner2.ui.theme.navigation.AlphabetScreen
-import com.example.arlearner2.ui.theme.navigation.HomeScreen
-import com.example.arlearner2.ui.theme.navigation.QuizScreen
+import com.example.arlearner2.ui.theme.navigation.AboutScreen
+import com.example.arlearner2.ui.theme.navigation.GalleryScreen
 
 @Composable
 fun HomeScreen(navController: NavController) {
-    Column (
+    Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onClick = { navController.navigate(AlphabetScreen) }) {
-            Text(text = "Alphabet")
+        Button(onClick = { /* TO BE ADDED LATER */ }) {
+            Text(text = "AR Camera")
         }
-        Button(onClick = { navController.navigate(QuizScreen) }) {
-            Text(text = "Quiz")
+        Button(onClick = { navController.navigate(GalleryScreen) }) {
+            Text(text = "Gallery")
+        }
+        Button(onClick = { navController.navigate(AboutScreen) }) {
+            Text(text = "About")
         }
     }
 }
