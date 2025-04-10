@@ -80,7 +80,7 @@ fun GalleryScreen(navController: NavController) {
             ModelNode(
                 modelInstance = modelLoader.createModelInstance(path),
                 autoAnimate = true,
-                scaleToUnits = 0.5f * scale // Adjust this value to change model size
+                scaleToUnits = 0.35f * scale // Reduced from 0.5f to prevent clipping
             ).apply { centerOrigin() }
         }
     }
@@ -108,7 +108,7 @@ fun GalleryScreen(navController: NavController) {
             modifier = Modifier
                 .weight(0.1f) // Adjust this weight to change Model Name section size
                 .fillMaxWidth()
-                .background(Color(0xFFBBDEFB)) // Light Blue for visualization
+                //.background(Color(0xFFBBDEFB)) // Light Blue for visualization
                 .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -121,35 +121,29 @@ fun GalleryScreen(navController: NavController) {
             )
         }
 
-        // Model Preview (60%) - Light Green background
+        // Model Preview (70%) - Light Green background
         Box(
             modifier = Modifier
-                .weight(0.6f) // Adjust this weight to change Model Preview section size
+                .weight(0.7f) // Adjust this weight to change Model Preview section size
                 .fillMaxWidth()
-                .background(Color(0xFFC8E6C9)) // Light Green for visualization
+                //.background(Color(0xFFC8E6C9)) // Light Green for visualization
         ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Top
-            ) {
-                Spacer(modifier = Modifier.weight(0.5f)) // Pushes Scene down by 20% of the section
-                Scene(
-                    modifier = Modifier
-                        .weight(0.5f) // Takes remaining 80% of the section
-                        .fillMaxWidth(),
-                    engine = engine,
-                    childNodes = childNodes,
-                    isOpaque = false
-                )
-            }
+            Scene(
+                modifier = Modifier
+                    .fillMaxSize() // Use full 70% space, no spacer
+                    .padding(top = 48.dp), // Lower by fixed amount (~10% of section)
+                engine = engine,
+                childNodes = childNodes,
+                isOpaque = false
+            )
         }
 
-        // Description (15%) - Light Yellow background
+        // Description + Buttons (20%) - Light Yellow background
         Card(
             modifier = Modifier
-                .weight(0.15f) // Adjust this weight to change Description section size
+                .weight(0.2f) // Adjust this weight to change Description + Buttons section size
                 .fillMaxWidth()
-                .background(Color(0xFFFFF9C4)) // Light Yellow for visualization
+                //.background(Color(0xFFFFF9C4)) // Light Yellow for visualization
                 .padding(horizontal = 8.dp),
             shape = RoundedCornerShape(8.dp),
             colors = CardDefaults.cardColors(
@@ -176,39 +170,55 @@ fun GalleryScreen(navController: NavController) {
                     fontSize = 14.sp,
                     modifier = Modifier.padding(bottom = 2.dp)
                 )
-            }
-        }
-
-        // Buttons (15%) - Light Pink background
-        Column(
-            modifier = Modifier
-                .weight(0.15f) // Adjust this weight to change Buttons section size
-                .fillMaxWidth()
-                .background(Color(0xFFF8BBD0)) // Light Pink for visualization
-                .padding(horizontal = 8.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(
-                    onClick = { prevModel() },
-                    modifier = Modifier.size(40.dp)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Previous",
-                        tint = MaterialTheme.colorScheme.secondary
-                    )
+                    IconButton(
+                        onClick = { prevModel() },
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Previous",
+                            tint = MaterialTheme.colorScheme.secondary
+                        )
+                    }
+                    Button(
+                        onClick = { navController.navigate(ARScreen(modelPaths[currentIndex])) },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 4.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        )
+                    ) {
+                        Text(
+                            text = "View in AR",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
+                            fontSize = 14.sp
+                        )
+                    }
+                    IconButton(
+                        onClick = { nextModel() },
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowForward,
+                            contentDescription = "Next",
+                            tint = MaterialTheme.colorScheme.secondary
+                        )
+                    }
                 }
                 Button(
-                    onClick = { navController.navigate(ARScreen(modelPaths[currentIndex])) },
+                    onClick = { navController.navigate(HomeScreen) },
                     modifier = Modifier
-                        .weight(1f)
-                        .padding(horizontal = 4.dp),
+                        .fillMaxWidth()
+                        .padding(top = 4.dp),
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
@@ -216,38 +226,11 @@ fun GalleryScreen(navController: NavController) {
                     )
                 ) {
                     Text(
-                        text = "View in AR",
+                        text = "Back to Home",
                         style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
-                        fontSize = 14.sp
+                        fontSize = 16.sp
                     )
                 }
-                IconButton(
-                    onClick = { nextModel() },
-                    modifier = Modifier.size(40.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowForward,
-                        contentDescription = "Next",
-                        tint = MaterialTheme.colorScheme.secondary
-                    )
-                }
-            }
-            Button(
-                onClick = { navController.navigate(HomeScreen) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            ) {
-                Text(
-                    text = "Back to Home",
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
-                    fontSize = 16.sp
-                )
             }
         }
     }
