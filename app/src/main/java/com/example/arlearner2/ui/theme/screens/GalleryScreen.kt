@@ -1,36 +1,18 @@
 package com.example.arlearner2.ui.theme.screens
 
+import android.content.Context
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,45 +24,42 @@ import io.github.sceneview.node.ModelNode
 import io.github.sceneview.rememberEngine
 import io.github.sceneview.rememberModelLoader
 import io.github.sceneview.rememberNodes
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 data class ModelInfo(
     val name: String,
     val dimensions: String,
-    val description: String
+    val description: String,
+    val path: String
 )
+
+fun loadModelInfoFromJson(context: Context): List<ModelInfo> {
+    val jsonString = context.assets.open("models.json").bufferedReader().use { it.readText() }
+    val listType = object : TypeToken<List<ModelInfo>>() {}.type
+    return Gson().fromJson(jsonString, listType)
+}
 
 @Composable
 fun GalleryScreen(navController: NavController) {
-    val modelPaths = listOf(
-        "models/chair1.glb",
-        "models/chair2.glb",
-        "models/cabinet1.glb",
-        "models/Duck.glb",
-        "models/1_meter_cube.glb"
-    )
-    val modelInfos = listOf(
-        ModelInfo("Chair 1", "0.5 x 0.5 x 0.9 m", "A modern minimalist chair."),
-        ModelInfo("Chair 2", "0.6 x 0.5 x 1.0 m", "A cushioned dining chair."),
-        ModelInfo("Cabinet 1", "1.2 x 0.4 x 0.8 m", "A sleek storage cabinet."),
-        ModelInfo("Duck", "1.2 x 0.4 x 0.8 m", "A duck."),
-        ModelInfo("Cube", "1 x 1 x 1 m", "Just a cube.")
-    )
+    val context = LocalContext.current
+    val modelInfos = remember { loadModelInfoFromJson(context) }
 
     val engine = rememberEngine()
     val modelLoader = rememberModelLoader(engine)
+
     var currentIndex by remember { mutableStateOf(0) }
     val totalModels = modelInfos.size
 
-    // Animation for model switch
     val scale by animateFloatAsState(targetValue = if (currentIndex % 2 == 0) 1f else 1.05f)
 
-    // Preload all models
-    val modelNodes = remember(modelPaths) {
-        modelPaths.map { path ->
+    // Preload model nodes
+    val modelNodes = remember(modelInfos) {
+        modelInfos.map { info ->
             ModelNode(
-                modelInstance = modelLoader.createModelInstance(path),
+                modelInstance = modelLoader.createModelInstance(info.path),
                 autoAnimate = true,
-                scaleToUnits = 0.35f * scale // Reduced from 0.5f to prevent clipping
+                scaleToUnits = 0.35f * scale
             ).apply { centerOrigin() }
         }
     }
@@ -103,12 +82,11 @@ fun GalleryScreen(navController: NavController) {
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        // Model Name (10%) - Light Blue background
+        // Model Name
         Column(
             modifier = Modifier
-                .weight(0.1f) // Adjust this weight to change Model Name section size
+                .weight(0.1f)
                 .fillMaxWidth()
-                //.background(Color(0xFFBBDEFB)) // Light Blue for visualization
                 .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -121,29 +99,27 @@ fun GalleryScreen(navController: NavController) {
             )
         }
 
-        // Model Preview (70%) - Light Green background
+        // Model Preview
         Box(
             modifier = Modifier
-                .weight(0.7f) // Adjust this weight to change Model Preview section size
+                .weight(0.7f)
                 .fillMaxWidth()
-                //.background(Color(0xFFC8E6C9)) // Light Green for visualization
         ) {
             Scene(
                 modifier = Modifier
-                    .fillMaxSize() // Use full 70% space, no spacer
-                    .padding(top = 48.dp), // Lower by fixed amount (~10% of section)
+                    .fillMaxSize()
+                    .padding(top = 48.dp),
                 engine = engine,
                 childNodes = childNodes,
                 isOpaque = false
             )
         }
 
-        // Description + Buttons (20%) - Light Yellow background
+        // Description + Buttons
         Card(
             modifier = Modifier
-                .weight(0.2f) // Adjust this weight to change Description + Buttons section size
+                .weight(0.2f)
                 .fillMaxWidth()
-                //.background(Color(0xFFFFF9C4)) // Light Yellow for visualization
                 .padding(horizontal = 8.dp),
             shape = RoundedCornerShape(8.dp),
             colors = CardDefaults.cardColors(
@@ -187,7 +163,7 @@ fun GalleryScreen(navController: NavController) {
                         )
                     }
                     Button(
-                        onClick = { navController.navigate(ARScreen(modelPaths[currentIndex])) },
+                        onClick = { navController.navigate(ARScreen(modelInfos[currentIndex].path)) },
                         modifier = Modifier
                             .weight(1f)
                             .padding(horizontal = 4.dp),

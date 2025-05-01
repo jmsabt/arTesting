@@ -4,27 +4,21 @@ import android.os.Build
 import android.view.MotionEvent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.arlearner2.ui.theme.navigation.GalleryScreen
 import com.example.arlearner2.util.Utils
+import com.example.arlearner2.util.loadModelInfoFromJson
 import com.google.ar.core.Config
 import com.google.ar.core.Frame
 import com.google.ar.core.TrackingFailureReason
@@ -46,6 +40,10 @@ import kotlinx.coroutines.delay
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
 fun ARScreen(navController: NavController, modelPath: String) {
+    val context = LocalContext.current
+    val modelInfos = remember { loadModelInfoFromJson(context) }
+    val selectedModel = modelInfos.firstOrNull { it.path == modelPath } ?: modelInfos.firstOrNull() // Fallback to first model if not found
+
     val engine = rememberEngine()
     val modelLoader = rememberModelLoader(engine = engine)
     val materialLoader = rememberMaterialLoader(engine = engine)
@@ -104,7 +102,7 @@ fun ARScreen(navController: NavController, modelPath: String) {
             },
             onGestureListener = rememberOnGestureListener(
                 onSingleTapConfirmed = { e: MotionEvent, node: Node? ->
-                    if (node == null && !hasPlacedModel.value) {
+                    if (node == null && !hasPlacedModel.value && selectedModel != null) {
                         val hitTestResults = frame.value?.hitTest(e.x, e.y)
                         hitTestResults?.firstOrNull {
                             it.isValid(depthPoint = false, point = false)
@@ -115,11 +113,11 @@ fun ARScreen(navController: NavController, modelPath: String) {
                                 materialLoader = materialLoader,
                                 modelInstance = modelInstance,
                                 anchor = it,
-                                modelPath = modelPath
+                                modelPath = selectedModel.path
                             )
                             childNodes += nodeModel
                             hasPlacedModel.value = true
-                            showTapPrompt.value = false // Hide prompt on tap
+                            showTapPrompt.value = false
                         }
                     }
                 }
@@ -152,6 +150,24 @@ fun ARScreen(navController: NavController, modelPath: String) {
             ) {
                 Text(
                     text = "Tap on the plane to place the model",
+                    color = Color.White,
+                    fontSize = 16.sp
+                )
+            }
+        }
+
+        // Error message if model not found
+        if (selectedModel == null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentSize(Alignment.Center)
+                    .padding(16.dp)
+                    .background(Color.Red.copy(alpha = 0.7f))
+                    .padding(8.dp)
+            ) {
+                Text(
+                    text = "Error: Model not found",
                     color = Color.White,
                     fontSize = 16.sp
                 )

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "339983493980",
+    "project_id": "arapp-2e77a",
+    "storage_bucket": "arapp-2e77a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:339983493980:android:76155f71f43becda4faf99",
+        "android_client_info": {
+          "package_name": "com.example.arlearner2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGcWv8B20Sd6PSjtjaljcZ2TMM2bOnpCc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

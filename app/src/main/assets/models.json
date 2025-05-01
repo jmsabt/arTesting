@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Chair 1",
+    "dimensions": "0.5 x 0.5 x 0.9 m",
+    "description": "A modern minimalist chair.",
+    "path": "models/chair1.glb"
+  },
+  {
+    "name": "Chair 2",
+    "dimensions": "0.6 x 0.5 x 1.0 m",
+    "description": "A cushioned dining chair.",
+    "path": "models/chair2.glb"
+  },
+  {
+    "name": "Cabinet 1",
+    "dimensions": "1.2 x 0.4 x 0.8 m",
+    "description": "A sleek storage cabinet.",
+    "path": "models/cabinet1.glb"
+  },
+  {
+    "name": "Duck",
+    "dimensions": "1.2 x 0.4 x 0.8 m",
+    "description": "A duck.",
+    "path": "models/Duck.glb"
+  },
+  {
+    "name": "Cube",
+    "dimensions": "1 x 1 x 1 m",
+    "description": "Just a cube.",
+    "path": "models/1_meter_cube.glb"
+  },
+  {
+    "name": "Solar Panel 1",
+    "dimensions": "1 x 1 x 1 m",
+    "description": "Just a panel.",
+    "path": "models/solar_panel.glb"
+  }
+]
