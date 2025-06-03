@@ -1,20 +1,32 @@
 [
   {
-    "name": "SPR MAX3 390",
-    "dimensions": "1690 mm × 1046 mm × 40 mm",
-    "description": "Power Output: 390 Watts\nEfficiency: Up to 22.1%\nCell Technology: Maxeon Gen 3 solar cells\nWeight: ~19 kg\nTemperature Coefficient: -0.27%/°C\nDurability: Designed for 40+ years of operation\nWarranty: 25-year product and performance warranty\nCertifications: IEC/UL certified, PID-resistant, ammonia and salt-mist resistant",
-    "path": "models/spr_mAX3_390.glb"
+    "name": "AE CMER-132BDS-610",
+    "dimensions": "1933 x 2133 x 30 mm",
+    "description": "Power Output: 610 W\nCell Type: N-Type Monocrystalline\nModule Type: Bifacial\nEfficiency: 22.6%\nVoltage at Maximum Power (Vmpp): 40.8 V\nCurrent at Maximum Power (Impp): 14.95 A\nOpen Circuit Voltage (Voc): 49 V\nShort Circuit Current (Isc): 15.96 A\nTemperature Coefficient of Pmax: -0.29%/°C\nWeight: 33.7 kg\nWarranty: 30-year performance guarantee, 12-year product warranty\nFeatures: LID and PID resistant, salt corrosion resistant, high transmission AR-coated tempered glass, anodized aluminum alloy frame",
+    "path": "models/panel1.glb"
   },
   {
-    "name": "SPR MAX 395",
-    "dimensions": "1690 mm x 1046 mm x 40 mm",
-    "description": "Power Output: 395 Watts\nEfficiency: 22.3%\nCell Technology: Monocrystalline Maxeon Gen III\nWeight: 19 kg\nOperating Temperature Range: -40°C to +85°C\nTemperature Coefficient of Pmax: -0.27%/°C\nDurability: Designed for 40+ years of operation\nWarranty: 40-year product and power warranty\nCertifications: IEC 61215, IEC 61730, ISO 9001:2015, ISO 14001:2015",
-    "path": "models/spr_mAX3_395.glb"
+    "name": "AE CMER-132BDS-605",
+    "dimensions": "1800 x 2800 x 30 mm",
+    "description": "Power Output: 605 W\nCell Type: N-Type Monocrystalline\nModule Type: Bifacial\nEfficiency: ~22.4%\nVoltage at Maximum Power (Vmpp): ~40.7 V\nCurrent at Maximum Power (Impp): ~14.90 A\nOpen Circuit Voltage (Voc): ~48.9 V\nShort Circuit Current (Isc): ~15.9 A\nTemperature Coefficient of Pmax: -0.29%/°C\nWeight: 33.7 kg\nWarranty: 30-year performance guarantee, 12-year product warranty\nFeatures: LID and PID resistant, salt corrosion resistant, high transmission AR-coated tempered glass, anodized aluminum alloy frame",
+    "path": "models/panel2.glb"
   },
   {
-    "name": "SPR MAX3 400",
-    "dimensions": "1690 mm x 1046 mm x 40 mm",
-    "description": "Power Output: 400 Watts\nEfficiency: Up to 22.6%\nCell Technology: Maxeon Gen 3 solar cells\nWeight: ~19 kg\nTemperature Coefficient: -0.29%/°C\nDurability: Designed for 40+ years of operation\nWarranty: 25-year product and performance warranty\nCertifications: IEC/UL certified, PID-resistant, ammonia and salt-mist resistant",
-    "path": "models/spr_mAX3_400.glb"
+    "name": "AE CMER-132BDS-600",
+    "dimensions": "1533 x 2533 x 30 mm",
+    "description": "Power Output: 600 W\nCell Type: N-Type Monocrystalline\nModule Type: Bifacial\nEfficiency: 22.3%\nVoltage at Maximum Power (Vmpp): 40.5 V\nCurrent at Maximum Power (Impp): 14.82 A\nOpen Circuit Voltage (Voc): 48.7 V\nShort Circuit Current (Isc): 15.8 A\nTemperature Coefficient of Pmax: -0.29%/°C\nWeight: 33.7 kg\nWarranty: 30-year performance guarantee, 12-year product warranty\nFeatures: LID and PID resistant, salt corrosion resistant, high transmission AR-coated tempered glass, anodized aluminum alloy frame",
+    "path": "models/panel3.glb"
+  },
+  {
+    "name": "AE CMER-132BDS-595",
+    "dimensions": "1333 x 2533 x 30 mm",
+    "description": "Power Output: 595 W\nCell Type: N-Type Monocrystalline\nModule Type: Bifacial\nEfficiency: 22.1%\nVoltage at Maximum Power (Vmpp): 40.2 V\nCurrent at Maximum Power (Impp): 14.8 A\nOpen Circuit Voltage (Voc): 48.5 V\nShort Circuit Current (Isc): 15.7 A\nTemperature Coefficient of Pmax: -0.29%/°C\nWeight: 33.7 kg\nWarranty: 30-year performance guarantee, 12-year product warranty\nFeatures: LID and PID resistant, salt corrosion resistant, high transmission AR-coated tempered glass, anodized aluminum alloy frame",
+    "path": "models/panel4.glb"
+  },
+  {
+    "name": "AE CMER-132BDS-590",
+    "dimensions": "2382 x 2382 x 30 mm",
+    "description": "Power Output: 590 W\nCell Type: N-Type Monocrystalline\nModule Type: Bifacial\nEfficiency: 21.9%\nVoltage at Maximum Power (Vmpp): 39.9 V\nCurrent at Maximum Power (Impp): 14.78 A\nOpen Circuit Voltage (Voc): 48.2 V\nShort Circuit Current (Isc): 15.6 A\nTemperature Coefficient of Pmax: -0.29%/°C\nWeight: 33.7 kg\nWarranty: 30-year performance guarantee, 12-year product warranty\nFeatures: LID and PID resistant, salt corrosion resistant, high transmission AR-coated tempered glass, anodized aluminum alloy frame",
+    "path": "models/panel5.glb"
   }
 ]
