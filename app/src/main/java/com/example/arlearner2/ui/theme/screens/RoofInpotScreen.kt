@@ -121,7 +121,7 @@ fun PrettyAreaPercentageSlider(
         Slider(
             value = areaPercentage,
             onValueChange = onValueChange,
-            valueRange = 50f..100f,
+            valueRange = 20f..100f,
             steps = 10, // ticks every 5%
             colors = SliderDefaults.colors(
                 thumbColor = MaterialTheme.colorScheme.primary,
@@ -198,11 +198,14 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
 
+                Text("Location:")
                 ExposedDropdownMenuBox(
                     expanded = expanded,
                     onExpandedChange = { expanded = !expanded },
                     modifier = Modifier.fillMaxWidth()
                 ) {
+
+
                     OutlinedTextField(
                         value = location,
                         onValueChange = {},
@@ -248,6 +251,7 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
                     Spacer(modifier = Modifier.height(8.dp))
                 }
 
+                Text("Roof Surface :")
                 OutlinedTextField(
                     value = widthText,
                     onValueChange = { widthText = filterDecimalInput(it) },
@@ -271,6 +275,8 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
+
+                Text("Energy Usage:")
 
                 OutlinedTextField(
                     value = monthlyKwhText,
@@ -320,7 +326,7 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
                     )
 
                     if (monthlyKwh != null && monthlyKwh > 0f &&
-                        areaPercentage in 50f..100f &&
+                        areaPercentage in 20f..100f &&
                         dailyKwhDemand != null && dailyKwhDemand > 0f
                     ) {
                         Text(
@@ -354,7 +360,7 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
                             outputsLimitedPerPanel.add(outputsForPercentages)
 
                             detailedInfoBuilder.append("""
-                                
+                                ----------------------------------
                                 **Panel: ${panel.model}**
                                 Area per panel: ${panel.area} m²
                                 Panel count (full roof): $panelCountFull
@@ -362,6 +368,7 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
                                 Daily output per panel: ${"%.2f".format(dailyOutputPerPanel)} kWh
                                 Total output (full roof): ${"%.2f".format(totalOutputFull)} kWh
                                 Total output (limited): ${"%.2f".format(totalOutputLimited)} kWh
+                            
                             """.trimIndent())
 
                             if (totalOutputLimited > bestOutputLimited) {
@@ -375,9 +382,37 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
                                 bestPanelCount = panelCountFull
                             }
                         }
-
+                        Text("----------------------------------")
                         Text("Best panel (limited area): ${bestPanel?.model} with output ${"%.2f".format(bestOutputLimited)} kWh")
+                        Text("Panels (using ${areaPercentage.toInt()}% of roof): $bestLimitedCount")
+                        Text("Panels (using full roof): $bestPanelCount")
+
                         Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Button(onClick = {
+                            showDialog = true
+                            dialogText = detailedInfoBuilder.toString()
+                        }) {
+                            Text("Show Detailed Info")
+                        }
+
+                        if (showDialog) {
+                            AlertDialog(
+                                onDismissRequest = { showDialog = false },
+                                confirmButton = {
+                                    TextButton(onClick = { showDialog = false }) {
+                                        Text("OK")
+                                    }
+                                },
+                                title = { Text("Detailed Panel Info") },
+                                text = {
+                                    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                                        Text(dialogText)
+                                    }
+                                }
+                            )
+                        }
 
                         MultiLineChart(
                             dataSets = outputsLimitedPerPanel,
