@@ -1,38 +1,20 @@
 [
   {
-    "name": "Chair 1",
-    "dimensions": "0.5 x 0.5 x 0.9 m",
-    "description": "A modern minimalist chair.",
-    "path": "models/chair1.glb"
+    "name": "SPR MAX3 390",
+    "dimensions": "1690 mm × 1046 mm × 40 mm",
+    "description": "Power Output: 390 Watts\nEfficiency: Up to 22.1%\nCell Technology: Maxeon Gen 3 solar cells\nWeight: ~19 kg\nTemperature Coefficient: -0.27%/°C\nDurability: Designed for 40+ years of operation\nWarranty: 25-year product and performance warranty\nCertifications: IEC/UL certified, PID-resistant, ammonia and salt-mist resistant",
+    "path": "models/spr_mAX3_390.glb"
   },
   {
-    "name": "Chair 2",
-    "dimensions": "0.6 x 0.5 x 1.0 m",
-    "description": "A cushioned dining chair.",
-    "path": "models/chair2.glb"
+    "name": "SPR MAX 395",
+    "dimensions": "1690 mm x 1046 mm x 40 mm",
+    "description": "Power Output: 395 Watts\nEfficiency: 22.3%\nCell Technology: Monocrystalline Maxeon Gen III\nWeight: 19 kg\nOperating Temperature Range: -40°C to +85°C\nTemperature Coefficient of Pmax: -0.27%/°C\nDurability: Designed for 40+ years of operation\nWarranty: 40-year product and power warranty\nCertifications: IEC 61215, IEC 61730, ISO 9001:2015, ISO 14001:2015",
+    "path": "models/spr_mAX3_395.glb"
   },
   {
-    "name": "Cabinet 1",
-    "dimensions": "1.2 x 0.4 x 0.8 m",
-    "description": "A sleek storage cabinet.",
-    "path": "models/cabinet1.glb"
-  },
-  {
-    "name": "Duck",
-    "dimensions": "1.2 x 0.4 x 0.8 m",
-    "description": "A duck.",
-    "path": "models/Duck.glb"
-  },
-  {
-    "name": "Cube",
-    "dimensions": "1 x 1 x 1 m",
-    "description": "Just a cube.",
-    "path": "models/1_meter_cube.glb"
-  },
-  {
-    "name": "Solar Panel 1",
-    "dimensions": "1 x 1 x 1 m",
-    "description": "Just a panel.",
-    "path": "models/solar_panel.glb"
+    "name": "SPR MAX3 400",
+    "dimensions": "1690 mm x 1046 mm x 40 mm",
+    "description": "Power Output: 400 Watts\nEfficiency: Up to 22.6%\nCell Technology: Maxeon Gen 3 solar cells\nWeight: ~19 kg\nTemperature Coefficient: -0.29%/°C\nDurability: Designed for 40+ years of operation\nWarranty: 25-year product and performance warranty\nCertifications: IEC/UL certified, PID-resistant, ammonia and salt-mist resistant",
+    "path": "models/spr_mAX3_400.glb"
   }
 ]

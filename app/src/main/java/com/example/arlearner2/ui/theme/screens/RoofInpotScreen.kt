@@ -29,7 +29,7 @@ fun filterDecimalInput(input: String): String {
     }
 }
 
-data class Panel(val model: String, val power: Int, val efficiency: Double, val area: Double)
+data class Panel(val model: String, val power: Int, val efficiency: Double, val area: Double, val price: Float)
 
 @Composable
 fun MultiLineChart(
@@ -122,7 +122,7 @@ fun PrettyAreaPercentageSlider(
             value = areaPercentage,
             onValueChange = onValueChange,
             valueRange = 20f..100f,
-            steps = 10, // ticks every 5%
+            steps = 10,
             colors = SliderDefaults.colors(
                 thumbColor = MaterialTheme.colorScheme.primary,
                 activeTrackColor = MaterialTheme.colorScheme.primaryContainer,
@@ -148,7 +148,6 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            // --- Buttons Row with spacers ---
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -172,7 +171,9 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
             var showError by remember { mutableStateOf(false) }
 
             var monthlyKwhText by remember { mutableStateOf("") }
-            var areaPercentage by remember { mutableStateOf(50f) } // default to 50%
+            var areaPercentage by remember { mutableStateOf(50f) }
+
+            var budgetText by remember { mutableStateOf("") }
 
             val locationOptions = listOf(
                 "Caloocan", "Las Piñas", "Makati", "Malabon", "Mandaluyong",
@@ -204,8 +205,6 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
                     onExpandedChange = { expanded = !expanded },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-
-
                     OutlinedTextField(
                         value = location,
                         onValueChange = {},
@@ -287,7 +286,15 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Replaced old areaPercentage TextField with slider
+                OutlinedTextField(
+                    value = budgetText,
+                    onValueChange = { budgetText = filterDecimalInput(it) },
+                    label = { Text("Budget (PHP)") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
                 PrettyAreaPercentageSlider(
                     areaPercentage = areaPercentage,
                     onValueChange = { areaPercentage = it }
@@ -308,6 +315,7 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
                 if (width != null && length != null && location.isNotBlank()) {
                     val roofArea = width * length
                     val monthlyKwh = monthlyKwhText.toFloatOrNull()
+                    val budget = budgetText.toFloatOrNull()
                     val usableArea = roofArea * (areaPercentage / 100f)
                     val solarIrradiance = 5f
                     val systemLoss = 0.80f
@@ -320,14 +328,17 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
                     } else 1f
 
                     val panels = listOf(
-                        Panel("SPR-MAX3-400", 400, 0.226, 1.90),
-                        Panel("SPR-MAX3-395", 395, 0.223, 1.90),
-                        Panel("SPR-MAX3-390", 390, 0.221, 1.90)
+                        Panel("AE CMER-132BDS-610", 610, 0.2260, 2.70, 6000f),
+                        Panel("AE CMER-132BDS-605", 605, 0.2240, 2.70, 5800f),
+                        Panel("AE CMER-132BDS-600", 600, 0.2220, 2.70, 5500f),
+                        Panel("AE CMER-132BDS-595", 595, 0.2200, 2.70, 5300f),
+                        Panel("AE CMER-132BDS-590", 590, 0.2180, 2.70, 5000f)
                     )
 
                     if (monthlyKwh != null && monthlyKwh > 0f &&
                         areaPercentage in 20f..100f &&
-                        dailyKwhDemand != null && dailyKwhDemand > 0f
+                        dailyKwhDemand != null && dailyKwhDemand > 0f &&
+                        budget != null && budget > 0f
                     ) {
                         Text(
                             "🌡 Adjusted efficiency factor due to temperature: ${"%.2f".format(tempEffectFactor)}"
@@ -335,13 +346,11 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
                         Spacer(modifier = Modifier.height(12.dp))
 
                         var bestPanel: Panel? = null
-                        var bestOutput = 0f
                         var bestOutputLimited = 0f
-                        var bestPanelCount = 0
                         var bestLimitedCount = 0
 
                         val outputsLimitedPerPanel = mutableListOf<List<Float>>()
-                        val colors = listOf(Color.Red, Color.Green, Color.Blue)
+                        val colors = listOf(Color.Red, Color.Green, Color.Blue, Color.Magenta, Color.Cyan)
 
                         val detailedInfoBuilder = StringBuilder()
 
@@ -350,84 +359,107 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
                             val panelCountLimited = floor(usableArea / panel.area).toInt()
                             val dailyOutputPerPanel =
                                 panel.power * panel.efficiency.toFloat() * solarIrradiance * systemLoss * tempEffectFactor / 1000f
-                            val totalOutputFull = panelCountFull * dailyOutputPerPanel
                             val totalOutputLimited = panelCountLimited * dailyOutputPerPanel
 
-                            val percentages = listOf(0f, 25f, 50f, 75f, 100f)
-                            val outputsForPercentages = percentages.map { p ->
-                                floor(roofArea * (p / 100f) / panel.area).toInt() * dailyOutputPerPanel
+                            val maxAffordableCount = (budget / panel.price).toInt()
+
+                            val recommendedCount = minOf(panelCountLimited, maxAffordableCount)
+                            val recommendedOutput = recommendedCount * dailyOutputPerPanel
+
+                            val percentages = listOf(0f, 25f, 50f, 75f, 100f, 125f, 150f)
+
+                            val outputList = percentages.map { pct ->
+                                val count = (recommendedCount * pct / 100f).toInt()
+                                count * dailyOutputPerPanel
                             }
-                            outputsLimitedPerPanel.add(outputsForPercentages)
 
-                            detailedInfoBuilder.append("""
-                                ----------------------------------
-                                **Panel: ${panel.model}**
-                                Area per panel: ${panel.area} m²
-                                Panel count (full roof): $panelCountFull
-                                Panel count (limited to ${areaPercentage.toInt()}%): $panelCountLimited
-                                Daily output per panel: ${"%.2f".format(dailyOutputPerPanel)} kWh
-                                Total output (full roof): ${"%.2f".format(totalOutputFull)} kWh
-                                Total output (limited): ${"%.2f".format(totalOutputLimited)} kWh
-                            
-                            """.trimIndent())
+                            outputsLimitedPerPanel.add(outputList)
 
-                            if (totalOutputLimited > bestOutputLimited) {
-                                bestOutputLimited = totalOutputLimited
+                            // Build the detailed info string here
+                            detailedInfoBuilder.appendLine("Panel: ${panel.model}")
+                            detailedInfoBuilder.appendLine("Area per panel: ${panel.area} m²")
+                            detailedInfoBuilder.appendLine("Power rating: ${panel.power} W")
+                            detailedInfoBuilder.appendLine("Efficiency: ${panel.efficiency}")
+                            detailedInfoBuilder.appendLine("Price per panel: ₱${panel.price}")
+                            detailedInfoBuilder.appendLine("Roof area: ${"%.2f".format(roofArea)} m²")
+                            detailedInfoBuilder.appendLine("Usable roof area (${areaPercentage.toInt()}%): ${"%.2f".format(usableArea)} m²")
+                            detailedInfoBuilder.appendLine("Max panels (roof area): $panelCountFull")
+                            detailedInfoBuilder.appendLine("Max panels (usable area): $panelCountLimited")
+                            detailedInfoBuilder.appendLine("Max affordable panels (budget): $maxAffordableCount")
+                            detailedInfoBuilder.appendLine("Recommended panel count: $recommendedCount")
+                            detailedInfoBuilder.appendLine("Estimated daily output at recommended count: ${"%.2f".format(recommendedOutput)} kWh")
+                            detailedInfoBuilder.appendLine()
+
+                            if (recommendedOutput >= dailyKwhDemand && recommendedOutput > bestOutputLimited) {
                                 bestPanel = panel
-                                bestLimitedCount = panelCountLimited
-                            }
-
-                            if (totalOutputFull > bestOutput) {
-                                bestOutput = totalOutputFull
-                                bestPanelCount = panelCountFull
+                                bestOutputLimited = recommendedOutput
+                                bestLimitedCount = recommendedCount
                             }
                         }
-                        Text("----------------------------------")
-                        Text("Best panel (limited area): ${bestPanel?.model} with output ${"%.2f".format(bestOutputLimited)} kWh")
-                        Text("Panels (using ${areaPercentage.toInt()}% of roof): $bestLimitedCount")
-                        Text("Panels (using full roof): $bestPanelCount")
 
-                        Spacer(modifier = Modifier.height(12.dp))
+                        // Show a button to open the detailed info dialog
+                        Button(onClick = {
+                            dialogText = detailedInfoBuilder.toString()
+                            showDialog = true
+                        }) {
+                            Text("Show Details")
+                        }
+
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        Button(onClick = {
-                            showDialog = true
-                            dialogText = detailedInfoBuilder.toString()
-                        }) {
-                            Text("Show Detailed Info")
-                        }
-
-                        if (showDialog) {
-                            AlertDialog(
-                                onDismissRequest = { showDialog = false },
-                                confirmButton = {
-                                    TextButton(onClick = { showDialog = false }) {
-                                        Text("OK")
-                                    }
-                                },
-                                title = { Text("Detailed Panel Info") },
-                                text = {
-                                    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                                        Text(dialogText)
-                                    }
-                                }
+                        if (bestPanel != null) {
+                            Text(
+                                "Recommended panel: ${bestPanel.model} with $bestLimitedCount panels"
+                            )
+                            Text(
+                                "Estimated daily output: ${"%.2f".format(bestOutputLimited)} kWh (vs demand ${"%.2f".format(dailyKwhDemand)})"
+                            )
+                        } else {
+                            Text(
+                                "No panel setup meets your daily demand within your budget and roof constraints."
                             )
                         }
 
+                        Spacer(modifier = Modifier.height(16.dp))
+
                         MultiLineChart(
                             dataSets = outputsLimitedPerPanel,
-                            labels = listOf("0%", "25%", "50%", "75%", "100%"),
+                            labels = listOf("0%", "25%", "50%", "75%", "100%", "125%", "150%"),
                             panelNames = panels.map { it.model },
                             colors = colors,
                             modifier = Modifier
-                                .height(250.dp)
                                 .fillMaxWidth()
+                                .height(250.dp)
                         )
-                    } else {
-                        Text("Please enter all valid inputs (width, length, location, monthly kWh, area percentage 50% or more)")
                     }
                 }
             }
         }
+
+        // Dialog to show detailed panel info
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                confirmButton = {
+                    TextButton(onClick = { showDialog = false }) {
+                        Text("Close")
+                    }
+                },
+                title = { Text("Detailed Panel Info") },
+                text = {
+                    // Use vertical scroll if content is too long
+                    Box(modifier = Modifier.heightIn(max = 400.dp)) {
+                        androidx.compose.foundation.rememberScrollState().let { scrollState ->
+                            androidx.compose.foundation.layout.Column(
+                                modifier = Modifier.verticalScroll(scrollState)
+                            ) {
+                                Text(dialogText)
+                            }
+                        }
+                    }
+                }
+            )
+        }
     }
 }
+

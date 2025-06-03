@@ -26,6 +26,11 @@ import io.github.sceneview.rememberModelLoader
 import io.github.sceneview.rememberNodes
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.style.TextAlign
+
 
 data class ModelInfo(
     val name: String,
@@ -39,6 +44,7 @@ fun loadModelInfoFromJson(context: Context): List<ModelInfo> {
     val listType = object : TypeToken<List<ModelInfo>>() {}.type
     return Gson().fromJson(jsonString, listType)
 }
+
 
 @Composable
 fun GalleryScreen(navController: NavController) {
@@ -129,23 +135,38 @@ fun GalleryScreen(navController: NavController) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp),
+                    .padding(4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = "Dimensions: ${modelInfos[currentIndex].dimensions}",
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(bottom = 2.dp)
                 )
-                Text(
-                    text = modelInfos[currentIndex].description,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(bottom = 2.dp)
+                val scrollState = rememberScrollState()
+
+                Box(
+                    modifier = Modifier
+                        .height(80.dp) // Adjust height if needed
+                        .fillMaxWidth()
+                        .verticalScroll(scrollState)
+                        .padding(bottom = 2.dp),
+                    contentAlignment = Alignment.Center
+
+
                 )
+
+                {
+                    Text(
+                        text = modelInfos[currentIndex].description,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -161,6 +182,9 @@ fun GalleryScreen(navController: NavController) {
                             contentDescription = "Previous",
                             tint = MaterialTheme.colorScheme.secondary
                         )
+                    }
+                    Button(onClick = { navController.popBackStack() }) {
+                        Text("Back")
                     }
                     Button(
                         onClick = { navController.navigate(ARScreen(modelInfos[currentIndex].path)) },
