@@ -2,7 +2,6 @@ package com.example.arlearner2.ui.theme.screens
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -107,6 +106,35 @@ fun MultiLineChart(
     }
 }
 
+@Composable
+fun PrettyAreaPercentageSlider(
+    areaPercentage: Float,
+    onValueChange: (Float) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier.padding(vertical = 8.dp)) {
+        Text(
+            text = "Roof Area to Use: ${areaPercentage.toInt()}%",
+            style = MaterialTheme.typography.titleMedium
+        )
+
+        Slider(
+            value = areaPercentage,
+            onValueChange = onValueChange,
+            valueRange = 50f..100f,
+            steps = 10, // ticks every 5%
+            colors = SliderDefaults.colors(
+                thumbColor = MaterialTheme.colorScheme.primary,
+                activeTrackColor = MaterialTheme.colorScheme.primaryContainer,
+                inactiveTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+                activeTickColor = MaterialTheme.colorScheme.primary,
+                inactiveTickColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewModel = viewModel()) {
@@ -144,7 +172,7 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
             var showError by remember { mutableStateOf(false) }
 
             var monthlyKwhText by remember { mutableStateOf("") }
-            var areaPercentageText by remember { mutableStateOf("") }
+            var areaPercentage by remember { mutableStateOf(50f) } // default to 50%
 
             val locationOptions = listOf(
                 "Caloocan", "Las Piñas", "Makati", "Malabon", "Mandaluyong",
@@ -253,11 +281,10 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedTextField(
-                    value = areaPercentageText,
-                    onValueChange = { areaPercentageText = filterDecimalInput(it) },
-                    label = { Text("Roof Area to Use (%)") },
-                    modifier = Modifier.fillMaxWidth()
+                // Replaced old areaPercentage TextField with slider
+                PrettyAreaPercentageSlider(
+                    areaPercentage = areaPercentage,
+                    onValueChange = { areaPercentage = it }
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -275,7 +302,7 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
                 if (width != null && length != null && location.isNotBlank()) {
                     val roofArea = width * length
                     val monthlyKwh = monthlyKwhText.toFloatOrNull()
-                    val areaPercentage = areaPercentageText.toFloatOrNull()
+                    val usableArea = roofArea * (areaPercentage / 100f)
                     val solarIrradiance = 5f
                     val systemLoss = 0.80f
                     val dailyKwhDemand = monthlyKwh?.div(30f)
@@ -293,10 +320,9 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
                     )
 
                     if (monthlyKwh != null && monthlyKwh > 0f &&
-                        areaPercentage != null && areaPercentage in 1.0..100.0 &&
+                        areaPercentage in 50f..100f &&
                         dailyKwhDemand != null && dailyKwhDemand > 0f
                     ) {
-                        val usableArea = roofArea * (areaPercentage / 100f)
                         Text(
                             "🌡 Adjusted efficiency factor due to temperature: ${"%.2f".format(tempEffectFactor)}"
                         )
@@ -332,43 +358,26 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
                                 **Panel: ${panel.model}**
                                 Area per panel: ${panel.area} m²
                                 Panel count (full roof): $panelCountFull
-                                Panel count (usable area): $panelCountLimited
+                                Panel count (limited to ${areaPercentage.toInt()}%): $panelCountLimited
                                 Daily output per panel: ${"%.2f".format(dailyOutputPerPanel)} kWh
-                                Total daily output (full roof): ${"%.2f".format(totalOutputFull)} kWh
-                                Total daily output (usable area): ${"%.2f".format(totalOutputLimited)} kWh 
-                                 ────────────────────
+                                Total output (full roof): ${"%.2f".format(totalOutputFull)} kWh
+                                Total output (limited): ${"%.2f".format(totalOutputLimited)} kWh
                             """.trimIndent())
 
-
                             if (totalOutputLimited > bestOutputLimited) {
-                                bestPanel = panel
                                 bestOutputLimited = totalOutputLimited
+                                bestPanel = panel
+                                bestLimitedCount = panelCountLimited
+                            }
+
+                            if (totalOutputFull > bestOutput) {
                                 bestOutput = totalOutputFull
                                 bestPanelCount = panelCountFull
-                                bestLimitedCount = panelCountLimited
                             }
                         }
 
-                        bestPanel?.let { panel ->
-                            Text(
-                                "Best Panel: ${panel.model}",
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                            Spacer(modifier = Modifier.height(2.dp))
-                            Text(
-                                "Panels on full roof: $bestPanelCount, Estimated output: ${"%.2f".format(bestOutput)} kWh/day"
-                            )
-                            Spacer(modifier = Modifier.height(2.dp))
-                        }
-
-                        Button(onClick = {
-                            dialogText = detailedInfoBuilder.toString()
-                            showDialog = true
-                        }) {
-                            Text("Show Detailed Info")
-                        }
-
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("Best panel (limited area): ${bestPanel?.model} with output ${"%.2f".format(bestOutputLimited)} kWh")
+                        Spacer(modifier = Modifier.height(12.dp))
 
                         MultiLineChart(
                             dataSets = outputsLimitedPerPanel,
@@ -376,36 +385,14 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
                             panelNames = panels.map { it.model },
                             colors = colors,
                             modifier = Modifier
-                                .fillMaxWidth()
                                 .height(250.dp)
+                                .fillMaxWidth()
                         )
                     } else {
-                        Text(
-                            "Please enter valid monthly kWh and roof area percentage (1-100)",
-                            color = MaterialTheme.colorScheme.error
-                        )
+                        Text("Please enter all valid inputs (width, length, location, monthly kWh, area percentage 50% or more)")
                     }
-                } else {
-                    Text(
-                        "Enter valid width, length, and location to see results.",
-                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-                    )
                 }
             }
-        }
-
-        if (showDialog) {
-            AlertDialog(
-                onDismissRequest = { showDialog = false },
-                confirmButton = {
-                    Button(onClick = { showDialog = false }) {
-                        Text("Close")
-                    }
-                },
-                text = {
-                    Text(dialogText)
-                }
-            )
         }
     }
 }
