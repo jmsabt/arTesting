@@ -43,32 +43,46 @@ android {
 
 dependencies {
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    dependencies {
+        // Core AndroidX
+        implementation(libs.androidx.core.ktx)
+        implementation(libs.androidx.lifecycle.runtime.ktx)
+        implementation(libs.androidx.activity.compose)
+        implementation(platform(libs.androidx.compose.bom))
+        implementation(libs.androidx.ui)
+        implementation(libs.androidx.ui.graphics)
+        implementation(libs.androidx.ui.tooling.preview)
+        implementation(libs.androidx.material3)
+        implementation(libs.androidx.appcompat)
 
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.arsceneview)
-    implementation(libs.androidx.material.icons.extended)
+        // Material and Navigation
+        implementation(libs.material)
+        implementation(libs.androidx.navigation.compose)
+        implementation(libs.androidx.material.icons.extended)
 
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics)
+        // SceneView and 3D rendering
+        implementation(libs.sceneview)
+        implementation(libs.core)
+        implementation(libs.arsceneview)
 
-    implementation(libs.gson)
+        // Networking and JSON
+        implementation(libs.retrofit)
+        implementation(libs.retrofit.converter.gson)
+        implementation(libs.kotlinx.serialization.json)
+        implementation(libs.gson)
 
+        // Firebase
+        implementation(platform(libs.firebase.bom))
+        implementation(libs.firebase.analytics)
 
+        // Testing
+        testImplementation(libs.junit)
+        androidTestImplementation(libs.androidx.junit)
+        androidTestImplementation(libs.androidx.espresso.core)
+        androidTestImplementation(platform(libs.androidx.compose.bom))
+        androidTestImplementation(libs.androidx.ui.test.junit4)
+        debugImplementation(libs.androidx.ui.tooling)
+        debugImplementation(libs.androidx.ui.test.manifest)
+    }
 
 }
