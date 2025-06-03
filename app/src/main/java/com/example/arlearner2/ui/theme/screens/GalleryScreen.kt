@@ -26,17 +26,14 @@ import io.github.sceneview.rememberModelLoader
 import io.github.sceneview.rememberNodes
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.style.TextAlign
-
 
 data class ModelInfo(
     val name: String,
     val dimensions: String,
     val description: String,
-    val path: String
+    val path: String,
+    val price: String,
 )
 
 fun loadModelInfoFromJson(context: Context): List<ModelInfo> {
@@ -44,7 +41,6 @@ fun loadModelInfoFromJson(context: Context): List<ModelInfo> {
     val listType = object : TypeToken<List<ModelInfo>>() {}.type
     return Gson().fromJson(jsonString, listType)
 }
-
 
 @Composable
 fun GalleryScreen(navController: NavController) {
@@ -73,6 +69,9 @@ fun GalleryScreen(navController: NavController) {
     val childNodes = rememberNodes()
     childNodes.clear()
     childNodes += modelNodes[currentIndex]
+
+    // Popup state
+    var showDescriptionPopup by remember { mutableStateOf(false) } // NEW
 
     // Navigation functions
     fun nextModel() {
@@ -103,6 +102,12 @@ fun GalleryScreen(navController: NavController) {
                 color = MaterialTheme.colorScheme.primary,
                 fontSize = 20.sp
             )
+            Text(
+                text = "Price: ${modelInfos[currentIndex].price}",
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                color = MaterialTheme.colorScheme.primary,
+                fontSize = 16.sp
+            )
         }
 
         // Model Preview
@@ -121,7 +126,7 @@ fun GalleryScreen(navController: NavController) {
             )
         }
 
-        // Description + Buttons
+        // Bottom Card
         Card(
             modifier = Modifier
                 .weight(0.2f)
@@ -143,30 +148,16 @@ fun GalleryScreen(navController: NavController) {
                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 14.sp,
-                    modifier = Modifier.padding(bottom = 2.dp)
-                )
-                val scrollState = rememberScrollState()
-
-                Box(
-                    modifier = Modifier
-                        .height(80.dp) // Adjust height if needed
-                        .fillMaxWidth()
-                        .verticalScroll(scrollState)
-                        .padding(bottom = 2.dp),
-                    contentAlignment = Alignment.Center
-
-
+                    modifier = Modifier.padding(bottom = 5.dp)
                 )
 
-                {
-                    Text(
-                        text = modelInfos[currentIndex].description,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontSize = 14.sp,
-                        textAlign = TextAlign.Center
-                    )
+                Button( // NEW
+                    onClick = { showDescriptionPopup = true },
+                    modifier = Modifier.padding(bottom = 4.dp)
+                ) {
+                    Text("View Description")
                 }
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -214,24 +205,34 @@ fun GalleryScreen(navController: NavController) {
                         )
                     }
                 }
-                Button(
-                    onClick = { navController.navigate(HomeScreen) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 4.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
-                    )
-                ) {
-                    Text(
-                        text = "Back to Home",
-                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
-                        fontSize = 16.sp
-                    )
-                }
             }
         }
+    }
+
+
+    // Show Description Popup
+    if (showDescriptionPopup) {
+        AlertDialog(
+            onDismissRequest = { showDescriptionPopup = false },
+            title = {
+                Text(
+                    text = "Description",
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold)
+                )
+            },
+            text = {
+                Text(
+                    text = modelInfos[currentIndex].description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Justify ,
+                    fontSize = 10.sp
+                )
+            },
+            confirmButton = {
+                Button(onClick = { showDescriptionPopup = false }) {
+                    Text("Close")
+                }
+            }
+        )
     }
 }

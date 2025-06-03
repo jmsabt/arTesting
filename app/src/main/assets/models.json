@@ -1,30 +1,35 @@
 [
   {
     "name": "AE CMER-132BDS-610",
+    "price": "₱6000",
     "dimensions": "1933 x 2133 x 30 mm",
     "description": "Power Output: 610 W\nCell Type: N-Type Monocrystalline\nModule Type: Bifacial\nEfficiency: 22.6%\nVoltage at Maximum Power (Vmpp): 40.8 V\nCurrent at Maximum Power (Impp): 14.95 A\nOpen Circuit Voltage (Voc): 49 V\nShort Circuit Current (Isc): 15.96 A\nTemperature Coefficient of Pmax: -0.29%/°C\nWeight: 33.7 kg\nWarranty: 30-year performance guarantee, 12-year product warranty\nFeatures: LID and PID resistant, salt corrosion resistant, high transmission AR-coated tempered glass, anodized aluminum alloy frame",
     "path": "models/panel1.glb"
   },
   {
     "name": "AE CMER-132BDS-605",
+    "price": "₱5800",
     "dimensions": "1800 x 2800 x 30 mm",
     "description": "Power Output: 605 W\nCell Type: N-Type Monocrystalline\nModule Type: Bifacial\nEfficiency: ~22.4%\nVoltage at Maximum Power (Vmpp): ~40.7 V\nCurrent at Maximum Power (Impp): ~14.90 A\nOpen Circuit Voltage (Voc): ~48.9 V\nShort Circuit Current (Isc): ~15.9 A\nTemperature Coefficient of Pmax: -0.29%/°C\nWeight: 33.7 kg\nWarranty: 30-year performance guarantee, 12-year product warranty\nFeatures: LID and PID resistant, salt corrosion resistant, high transmission AR-coated tempered glass, anodized aluminum alloy frame",
     "path": "models/panel2.glb"
   },
   {
     "name": "AE CMER-132BDS-600",
+    "price": "₱5500",
     "dimensions": "1533 x 2533 x 30 mm",
     "description": "Power Output: 600 W\nCell Type: N-Type Monocrystalline\nModule Type: Bifacial\nEfficiency: 22.3%\nVoltage at Maximum Power (Vmpp): 40.5 V\nCurrent at Maximum Power (Impp): 14.82 A\nOpen Circuit Voltage (Voc): 48.7 V\nShort Circuit Current (Isc): 15.8 A\nTemperature Coefficient of Pmax: -0.29%/°C\nWeight: 33.7 kg\nWarranty: 30-year performance guarantee, 12-year product warranty\nFeatures: LID and PID resistant, salt corrosion resistant, high transmission AR-coated tempered glass, anodized aluminum alloy frame",
     "path": "models/panel3.glb"
   },
   {
     "name": "AE CMER-132BDS-595",
+    "price": "₱5300",
     "dimensions": "1333 x 2533 x 30 mm",
     "description": "Power Output: 595 W\nCell Type: N-Type Monocrystalline\nModule Type: Bifacial\nEfficiency: 22.1%\nVoltage at Maximum Power (Vmpp): 40.2 V\nCurrent at Maximum Power (Impp): 14.8 A\nOpen Circuit Voltage (Voc): 48.5 V\nShort Circuit Current (Isc): 15.7 A\nTemperature Coefficient of Pmax: -0.29%/°C\nWeight: 33.7 kg\nWarranty: 30-year performance guarantee, 12-year product warranty\nFeatures: LID and PID resistant, salt corrosion resistant, high transmission AR-coated tempered glass, anodized aluminum alloy frame",
     "path": "models/panel4.glb"
   },
   {
     "name": "AE CMER-132BDS-590",
+    "price": "₱5000",
     "dimensions": "2382 x 2382 x 30 mm",
     "description": "Power Output: 590 W\nCell Type: N-Type Monocrystalline\nModule Type: Bifacial\nEfficiency: 21.9%\nVoltage at Maximum Power (Vmpp): 39.9 V\nCurrent at Maximum Power (Impp): 14.78 A\nOpen Circuit Voltage (Voc): 48.2 V\nShort Circuit Current (Isc): 15.6 A\nTemperature Coefficient of Pmax: -0.29%/°C\nWeight: 33.7 kg\nWarranty: 30-year performance guarantee, 12-year product warranty\nFeatures: LID and PID resistant, salt corrosion resistant, high transmission AR-coated tempered glass, anodized aluminum alloy frame",
     "path": "models/panel5.glb"
