@@ -46,7 +46,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.layout.Arrangement
 
 
-// Data class for solar panel model
+// Data class for solar panel modelee
 data class SolarPanelModel(val name: String, val modelPath: String)
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
