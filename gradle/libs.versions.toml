@@ -1,39 +1,53 @@
 [versions]
 # Build plugins and language
-agp = "8.8.0"
+agp = "8.8.2" # Use latest available
 kotlin = "2.0.0"
 
 # Core AndroidX & Lifecycle
+core = "1.44.0"
 coreKtx = "1.15.0"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.10.1"
+appcompat = "1.7.0"
 
 # Compose BOM & related
-composeBom = "2024.04.01"
-navigationCompose = "2.8.3"
+composeBom = "2024.10.00" # Latest stable BOM as of March 2025
+navigationCompose = "2.8.9"
+material3 = "1.2.1"
 kotlinxSerializationJson = "1.6.3"
 
-# Gson for JSON serialization
-gson = "2.11.0"
+# UI
+material = "1.12.0"
 
-# AR SceneView
+# AR SceneView & SceneKit
 arsceneview = "2.2.1"
+sceneview = "2.2.1"
 
 # Firebase
 firebaseBom = "33.13.0"
+
+# Gson / Retrofit
+gson = "2.11.0" # Kept latest
+retrofit = "2.9.0"
+
+# Coroutines
+coroutines = "1.6.4"
 
 # Testing
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 
+#Im Charting it
 [libraries]
-# Core AndroidX & Lifecycle
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
-androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 
-# Compose & UI libraries
+# Core AndroidX & Lifecycle
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+
+# Compose & UI
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
@@ -41,18 +55,29 @@ androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+
+# Google Material
+material = { module = "com.google.android.material:material", version.ref = "material" }
 
 # KotlinX Serialization
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
-# Gson
+# Gson & Retrofit
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+
+# Coroutines
+coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 
 # AR SceneView
 arsceneview = { module = "io.github.sceneview:arsceneview", version.ref = "arsceneview" }
+sceneview = { module = "io.github.sceneview:sceneview", version.ref = "sceneview" }
+core = { module = "com.google.ar:core", version.ref = "core" }
 
 # Firebase
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
@@ -62,7 +87,6 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

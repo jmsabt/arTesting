@@ -1,22 +1,15 @@
 package com.example.arlearner2.ui.theme.screens
 
+import android.util.Log
 import android.os.Build
 import android.view.MotionEvent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,16 +18,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.arlearner2.ui.theme.navigation.HomeScreen
 import com.example.arlearner2.util.Utils
-import com.google.ar.core.Config
-import com.google.ar.core.Frame
-import com.google.ar.core.HitResult
-import com.google.ar.core.Plane
-import com.google.ar.core.TrackingFailureReason
-import io.github.sceneview.ar.ARScene
+import com.google.ar.core.*
+import io.github.sceneview.ar.*
 import io.github.sceneview.ar.arcore.createAnchorOrNull
 import io.github.sceneview.ar.arcore.isValid
 import io.github.sceneview.ar.node.AnchorNode
-import io.github.sceneview.ar.rememberARCameraNode
 import io.github.sceneview.math.Position
 import io.github.sceneview.model.ModelInstance
 import io.github.sceneview.node.Node
@@ -49,6 +37,9 @@ import kotlinx.coroutines.delay
 import java.nio.FloatBuffer
 import kotlin.math.floor
 import kotlin.math.sqrt
+
+// Data class for solar panel models
+data class SolarPanelModel(val name: String, val modelPath: String)
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
@@ -71,19 +62,28 @@ fun ARCameraScreen(navController: NavController) {
     val showPlacePrompt = remember { mutableStateOf(false) }
     val hasPlacedModels = remember { mutableStateOf(false) }
     val placementFeedback = remember { mutableStateOf<String?>(null) }
+    val scrollState = rememberScrollState()
 
-    // Default model and size
-    val defaultModelPath = "models/1_meter_cube.glb"
-    val modelSize = 0.2f // 0.2m x 0.2m footprint
-    val spacing = 0.1f // 0.1m spacing
-    val totalModelSize = modelSize + spacing // 0.3m per model in each direction
+    // List of available solar panel models
+    val solarPanelModels = listOf(
+        SolarPanelModel("AE CMER-132BDS-610", "models/panel1.glb"),
+        SolarPanelModel("AE CMER-132BDS-605", "models/panel2.glb"),
+        SolarPanelModel("AE CMER-132BDS-600", "models/panel3.glb"),
+        SolarPanelModel("AE CMER-132BDS-595", "models/panel4.glb"),
+        SolarPanelModel("AE CMER-132BDS-590", "models/panel5.glb")
+    )
 
-    // Hide plane renderer 2 seconds after placement
+    // Currently selected panel state
+    val selectedPanel = remember { mutableStateOf(solarPanelModels.first()) }
+    val modelSize = 0.2f
+    val spacing = 0.1f
+    val totalModelSize = modelSize + spacing
+
     LaunchedEffect(hasPlacedModels.value) {
         if (hasPlacedModels.value) {
             delay(2000L)
             planeRenderer.value = false
-            delay(1000L) // Show feedback for 1 more second
+            delay(1000L)
             placementFeedback.value = null
         }
     }
@@ -115,9 +115,10 @@ fun ARCameraScreen(navController: NavController) {
                 }
             },
             sessionConfiguration = { session, config ->
-                config.depthMode = when (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
-                    true -> Config.DepthMode.AUTOMATIC
-                    else -> Config.DepthMode.DISABLED
+                config.depthMode = if (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
+                    Config.DepthMode.AUTOMATIC
+                } else {
+                    Config.DepthMode.DISABLED
                 }
                 config.lightEstimationMode = Config.LightEstimationMode.ENVIRONMENTAL_HDR
             },
@@ -129,7 +130,6 @@ fun ARCameraScreen(navController: NavController) {
                             it.isValid(depthPoint = false, point = false)
                         }
                         when {
-                            // First tap: Select the plane
                             selectedPlaneHit.value == null && hitResult != null -> {
                                 selectedPlaneHit.value = hitResult
                                 showSelectPrompt.value = false
@@ -139,7 +139,6 @@ fun ARCameraScreen(navController: NavController) {
                                     showPlacePrompt.value = true
                                 }
                             }
-                            // Second tap: Place multiple models
                             selectedPlaneHit.value != null && !hasPlacedModels.value && hitResult != null -> {
                                 val selectedPlane = selectedPlaneHit.value!!.trackable as Plane
                                 if (hitResult.trackable == selectedPlane) {
@@ -149,15 +148,15 @@ fun ARCameraScreen(navController: NavController) {
                                         val maxModels = floor(area / (totalModelSize * totalModelSize)).toInt()
                                         val gridSize = floor(sqrt(maxModels.toDouble())).toInt()
                                         val modelsPlaced = placeModels(
-                                            engine = engine,
-                                            modelLoader = modelLoader,
-                                            materialLoader = materialLoader,
-                                            modelInstance = modelInstance,
-                                            anchor = it,
-                                            modelPath = defaultModelPath,
-                                            scale = modelSize,
-                                            spacing = spacing,
-                                            maxModels = gridSize * gridSize
+                                            engine,
+                                            modelLoader,
+                                            materialLoader,
+                                            modelInstance,
+                                            it,
+                                            selectedPanel.value.modelPath,
+                                            modelSize,
+                                            spacing,
+                                            gridSize * gridSize
                                         )
                                         childNodes += modelsPlaced
                                         hasPlacedModels.value = true
@@ -172,21 +171,13 @@ fun ARCameraScreen(navController: NavController) {
             )
         )
 
-        // Loading indicator
         if (!isPlaneFound.value) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
-                Text(
-                    text = "Searching for a plane...",
-                    modifier = Modifier.padding(top = 16.dp)
-                )
+                Text("Searching for a plane...", modifier = Modifier.padding(top = 16.dp))
             }
         }
 
-        // Select plane prompt
         if (showSelectPrompt.value) {
             Box(
                 modifier = Modifier
@@ -196,15 +187,10 @@ fun ARCameraScreen(navController: NavController) {
                     .background(Color.Black.copy(alpha = 0.7f))
                     .padding(8.dp)
             ) {
-                Text(
-                    text = "Tap to select plane",
-                    color = Color.White,
-                    fontSize = 16.sp
-                )
+                Text("Tap to select plane", color = Color.White, fontSize = 16.sp)
             }
         }
 
-        // Place models prompt
         if (showPlacePrompt.value) {
             Box(
                 modifier = Modifier
@@ -214,15 +200,10 @@ fun ARCameraScreen(navController: NavController) {
                     .background(Color.Black.copy(alpha = 0.7f))
                     .padding(8.dp)
             ) {
-                Text(
-                    text = "Tap to place models",
-                    color = Color.White,
-                    fontSize = 16.sp
-                )
+                Text("Tap to place models", color = Color.White, fontSize = 16.sp)
             }
         }
 
-        // Surface area and feedback at bottom center
         Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -231,7 +212,7 @@ fun ARCameraScreen(navController: NavController) {
         ) {
             planeArea.value?.let { area ->
                 Text(
-                    text = "Surface Area: %.2f m²".format(area),
+                    "Surface Area: %.2f m²".format(area),
                     color = Color.White,
                     fontSize = 16.sp,
                     modifier = Modifier
@@ -241,7 +222,7 @@ fun ARCameraScreen(navController: NavController) {
             }
             placementFeedback.value?.let { feedback ->
                 Text(
-                    text = feedback,
+                    feedback,
                     color = Color.White,
                     fontSize = 16.sp,
                     modifier = Modifier
@@ -249,6 +230,40 @@ fun ARCameraScreen(navController: NavController) {
                         .padding(8.dp)
                 )
             }
+
+            // Panel selection buttons row
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(scrollState)
+                    .background(Color.Black.copy(alpha = 0.7f))
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                solarPanelModels.forEach { panel ->
+                    Button(
+                        onClick = {
+                            selectedPanel.value = panel
+                            hasPlacedModels.value = false // Allow placement again
+                            childNodes.clear() // Remove previously placed models
+                            modelInstance.clear() // Clear model instances
+                            Log.d("ARCameraScreen", "Selected panel changed to: ${selectedPanel}")
+                            // Or println("Selected panel changed to: ${panel.name}")
+                        },
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .padding(vertical = 4.dp),
+                        colors = if (panel == selectedPanel.value) {
+                            ButtonDefaults.buttonColors(containerColor = Color.Green)
+                        } else {
+                            ButtonDefaults.buttonColors()
+                        }
+                    ) {
+                        Text(text = panel.name, fontSize = 12.sp)
+                    }
+                }
+            }
+
             Button(onClick = { navController.navigate(HomeScreen) }) {
                 Text("Back to Main")
             }
@@ -256,7 +271,6 @@ fun ARCameraScreen(navController: NavController) {
     }
 }
 
-// Helper functions
 fun calculatePlaneArea(polygon: FloatBuffer): Float {
     val vertices = mutableListOf<Pair<Float, Float>>()
     polygon.rewind()
@@ -267,7 +281,7 @@ fun calculatePlaneArea(polygon: FloatBuffer): Float {
     }
     if (vertices.size < 3) return 0f
     var area = 0f
-    for (i in 0 until vertices.size) {
+    for (i in vertices.indices) {
         val j = (i + 1) % vertices.size
         area += vertices[i].first * vertices[j].second
         area -= vertices[j].first * vertices[i].second
@@ -281,7 +295,7 @@ fun placeModels(
     modelLoader: io.github.sceneview.loaders.ModelLoader,
     materialLoader: io.github.sceneview.loaders.MaterialLoader,
     modelInstance: MutableList<ModelInstance>,
-    anchor: com.google.ar.core.Anchor,
+    anchor: Anchor,
     modelPath: String,
     scale: Float,
     spacing: Float,
@@ -291,7 +305,6 @@ fun placeModels(
     val nodes = mutableListOf<AnchorNode>()
     val gridSize = sqrt(maxModels.toDouble()).toInt()
     val totalSize = scale + spacing
-
     for (i in 0 until gridSize) {
         for (j in 0 until gridSize) {
             val index = i * gridSize + j

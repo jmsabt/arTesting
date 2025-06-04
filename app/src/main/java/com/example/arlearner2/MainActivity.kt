@@ -21,11 +21,14 @@ import com.example.arlearner2.ui.theme.navigation.ARCameraScreen
 import com.example.arlearner2.ui.theme.navigation.ARScreen
 import com.example.arlearner2.ui.theme.navigation.GalleryScreen
 import com.example.arlearner2.ui.theme.navigation.HomeScreen
+import com.example.arlearner2.ui.theme.navigation.RoofInpotScreen
 import com.example.arlearner2.ui.theme.screens.AboutScreen
 import com.example.arlearner2.ui.theme.screens.ARCameraScreen
 import com.example.arlearner2.ui.theme.screens.ARScreen
 import com.example.arlearner2.ui.theme.screens.GalleryScreen
 import com.example.arlearner2.ui.theme.screens.HomeScreen
+import com.example.arlearner2.ui.theme.screens.RoofInpotScreen
+
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
@@ -44,6 +47,10 @@ class MainActivity : ComponentActivity() {
                         composable<HomeScreen> {
                             HomeScreen(navController)
                         }
+
+                        composable<RoofInpotScreen> {
+                            RoofInpotScreen(navController)
+                        }
                         composable<AboutScreen> {
                             AboutScreen(navController)
                         }
@@ -57,6 +64,7 @@ class MainActivity : ComponentActivity() {
                         composable<ARCameraScreen> {
                             ARCameraScreen(navController)
                         }
+
                     }
                 }
             }

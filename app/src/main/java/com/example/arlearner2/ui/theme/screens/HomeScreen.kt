@@ -26,6 +26,8 @@ import com.example.arlearner2.R
 import com.example.arlearner2.ui.theme.navigation.AboutScreen
 import com.example.arlearner2.ui.theme.navigation.ARCameraScreen
 import com.example.arlearner2.ui.theme.navigation.GalleryScreen
+import com.example.arlearner2.ui.theme.navigation.RoofInpotScreen
+
 
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -70,7 +72,7 @@ fun HomeScreen(navController: NavController) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Button(
-                onClick = { navController.navigate(ARCameraScreen) },
+                onClick = { navController.navigate(RoofInpotScreen) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
@@ -81,7 +83,7 @@ fun HomeScreen(navController: NavController) {
                 )
             ) {
                 Text(
-                    text = "AR Camera",
+                    text = "Input Roof Surface",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium
                 )
