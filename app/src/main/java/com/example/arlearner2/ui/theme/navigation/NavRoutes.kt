@@ -15,7 +15,7 @@ data class ARScreen(val modelPath: String)
 data object ARCameraScreen
 
 @Serializable
-data object SolarCalcScreen
+data object ModelSelectionScreen
 
 @Serializable
 data object RoofInpotScreen

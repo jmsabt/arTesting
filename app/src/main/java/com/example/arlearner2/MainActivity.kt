@@ -22,7 +22,6 @@ import com.example.arlearner2.ui.theme.navigation.ARScreen
 import com.example.arlearner2.ui.theme.navigation.GalleryScreen
 import com.example.arlearner2.ui.theme.navigation.HomeScreen
 import com.example.arlearner2.ui.theme.navigation.RoofInpotScreen
-import com.example.arlearner2.ui.theme.navigation.SolarCalcScreen
 import com.example.arlearner2.ui.theme.screens.AboutScreen
 import com.example.arlearner2.ui.theme.screens.ARCameraScreen
 import com.example.arlearner2.ui.theme.screens.ARScreen
