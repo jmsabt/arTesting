@@ -381,8 +381,6 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
                             detailedInfoBuilder.appendLine("Power rating: ${panel.power} W")
                             detailedInfoBuilder.appendLine("Efficiency: ${panel.efficiency}")
                             detailedInfoBuilder.appendLine("Price per panel: ₱${panel.price}")
-                            detailedInfoBuilder.appendLine("Roof area: ${"%.2f".format(roofArea)} m²")
-                            detailedInfoBuilder.appendLine("Usable roof area (${areaPercentage.toInt()}%): ${"%.2f".format(usableArea)} m²")
                             detailedInfoBuilder.appendLine("Max panels (roof area): $panelCountFull")
                             detailedInfoBuilder.appendLine("Max panels (usable area): $panelCountLimited")
                             detailedInfoBuilder.appendLine("Max affordable panels (budget): $maxAffordableCount")
