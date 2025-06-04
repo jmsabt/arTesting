@@ -75,11 +75,11 @@ fun ARCameraScreen(navController: NavController) {
 
     // List of available solar panel models
     val solarPanelModels = listOf(
-        SolarPanelModel("AE CMER-132BDS-610", "models/panel_610.glb"),
-        SolarPanelModel("AE CMER-132BDS-605", "models/panel_605.glb"),
-        SolarPanelModel("AE CMER-132BDS-600", "models/panel_600.glb"),
-        SolarPanelModel("AE CMER-132BDS-595", "models/panel_595.glb"),
-        SolarPanelModel("AE CMER-132BDS-590", "models/panel_590.glb")
+        SolarPanelModel("AE CMER-132BDS-610", "models/panel1.glb"),
+        SolarPanelModel("AE CMER-132BDS-605", "models/panel2.glb"),
+        SolarPanelModel("AE CMER-132BDS-600", "models/panel3.glb"),
+        SolarPanelModel("AE CMER-132BDS-595", "models/panel4.glb"),
+        SolarPanelModel("AE CMER-132BDS-590", "models/panel5.glb")
     )
 
     // Currently selected panel state
