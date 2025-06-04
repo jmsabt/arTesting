@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.arlearner2.ui.theme.navigation.HomeScreen
 import com.example.arlearner2.util.GlobalKit
+import com.example.arlearner2.util.GlobalKitPanel
 import com.example.arlearner2.util.Utils
 import com.google.ar.core.*
 import io.github.sceneview.ar.*
@@ -55,7 +56,7 @@ fun ARCameraScreen(navController: NavController) {
     val view = rememberView(engine = engine)
     val collisionSystem = rememberCollisionSystem(view = view)
     val planeRenderer = remember { mutableStateOf(true) }
-    val modelInstance = remember { mutableListOf<ModelInstance>() }
+    val modelInstance = remember { mutableStateListOf<ModelInstance>() }
     val trackingFailureReason = remember { mutableStateOf<TrackingFailureReason?>(null) }
     val frame = remember { mutableStateOf<Frame?>(null) }
     val isPlaneFound = remember { mutableStateOf(false) }
@@ -66,7 +67,7 @@ fun ARCameraScreen(navController: NavController) {
     val hasPlacedModels = remember { mutableStateOf(false) }
     val placementFeedback = remember { mutableStateOf<String?>(null) }
     val scrollState = rememberScrollState()
-    val area = planeArea.value ?: 0f
+
     // List of available solar panel models
     val solarPanelModels = listOf(
         SolarPanelModel("AE CMER-132BDS-610", "models/panel1.glb"),
@@ -76,9 +77,15 @@ fun ARCameraScreen(navController: NavController) {
         SolarPanelModel("AE CMER-132BDS-590", "models/panel5.glb")
     )
 
-    // Currently selected panel state
-    val selectedPanel = remember { mutableStateOf(solarPanelModels.first()) }
-    val modelSize = 0.2f
+    val recommendedPanelName = GlobalKitPanel.bestPanel
+
+    // Initialize selectedPanel with recommended panel or fallback to first
+    val selectedPanel = remember {
+        mutableStateOf(
+            solarPanelModels.find { it.name == recommendedPanelName } ?: solarPanelModels.first()
+        )
+    }
+    val modelSize = 0.10f
     val spacing = 0.1f
     val totalModelSize = modelSize + spacing
 

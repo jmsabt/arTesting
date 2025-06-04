@@ -1,5 +1,7 @@
 package com.example.arlearner2.ui.theme.screens
 
+import android.util.Log
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -23,7 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.nativeCanvas
 import com.example.arlearner2.ui.theme.navigation.ARCameraScreen
 import com.example.arlearner2.util.GlobalKit
-
+import com.example.arlearner2.util.GlobalKitPanel
 fun filterDecimalInput(input: String): String {
     return input.filterIndexed { index, c ->
         c.isDigit() || (c == '.' && input.indexOf('.') == index)
@@ -158,7 +160,11 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
                     Text("Back")
                 }
 
-                Button(onClick = { navController.navigate(ARCameraScreen) }) {
+                Button(onClick = {
+                    Log.d("RoofInpotScreen", "GlobalKit: ${GlobalKit.bestLimitedCount}")
+                    Log.d("RoofInpotScreen", "GlobalKitPanel.bestPanel: ${GlobalKitPanel.bestPanel}")
+                    navController.navigate(ARCameraScreen)
+                }) {
                     Text("Go to AR")
                 }
             }
@@ -392,6 +398,7 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
                             detailedInfoBuilder.appendLine()
 
                             if (recommendedOutput >= dailyKwhDemand && recommendedOutput > bestOutputLimited) {
+                                GlobalKitPanel.bestPanel = panel.model
                                 bestPanel = panel
                                 bestOutputLimited = recommendedOutput
                                 GlobalKit.bestLimitedCount = recommendedCount
