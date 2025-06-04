@@ -8,6 +8,7 @@
     import kotlinx.coroutines.flow.StateFlow
     import kotlinx.coroutines.launch
 
+
     class WeatherViewModel : ViewModel() {
 
         private val _weatherState = MutableStateFlow<WeatherResponse?>(null)
@@ -17,7 +18,6 @@
         val errorState: StateFlow<String?> = _errorState
 
         private val apiKey = "bd5e378503939ddaee76f12ad7a97608"  // your API key
-
         fun fetchWeather(city: String) {
             viewModelScope.launch {
                 try {

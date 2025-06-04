@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.arlearner2.ui.theme.navigation.HomeScreen
+import com.example.arlearner2.util.GlobalKit
 import com.example.arlearner2.util.Utils
 import com.google.ar.core.*
 import io.github.sceneview.ar.*
@@ -37,6 +38,8 @@ import kotlinx.coroutines.delay
 import java.nio.FloatBuffer
 import kotlin.math.floor
 import kotlin.math.sqrt
+import kotlin.math.min
+
 
 // Data class for solar panel models
 data class SolarPanelModel(val name: String, val modelPath: String)
@@ -63,7 +66,7 @@ fun ARCameraScreen(navController: NavController) {
     val hasPlacedModels = remember { mutableStateOf(false) }
     val placementFeedback = remember { mutableStateOf<String?>(null) }
     val scrollState = rememberScrollState()
-
+    val area = planeArea.value ?: 0f
     // List of available solar panel models
     val solarPanelModels = listOf(
         SolarPanelModel("AE CMER-132BDS-610", "models/panel1.glb"),
@@ -145,8 +148,12 @@ fun ARCameraScreen(navController: NavController) {
                                     val anchor = hitResult.createAnchorOrNull()
                                     anchor?.let {
                                         val area = planeArea.value ?: 0f
-                                        val maxModels = floor(area / (totalModelSize * totalModelSize)).toInt()
-                                        val gridSize = floor(sqrt(maxModels.toDouble())).toInt()
+                                        val maxModelsByArea = floor(area / (totalModelSize * totalModelSize)).toInt()
+                                        val maxModels = minOf(maxModelsByArea, GlobalKit.bestLimitedCount)
+                                        println("GlobalKit.bestLimitedCount = ${GlobalKit.bestLimitedCount}")
+                                        Log.d("----ARCameraScreen", "GlobalKit.bestLimitedCount = ${GlobalKit.bestLimitedCount}")
+                                        Log.d("------ARCameraScreen", "Max models by area = $maxModelsByArea")
+                                        Log.d("--------ARCameraScreen", "Using maxModels = $maxModels")
                                         val modelsPlaced = placeModels(
                                             engine,
                                             modelLoader,
@@ -156,7 +163,7 @@ fun ARCameraScreen(navController: NavController) {
                                             selectedPanel.value.modelPath,
                                             modelSize,
                                             spacing,
-                                            gridSize * gridSize
+                                            maxModels
                                         )
                                         childNodes += modelsPlaced
                                         hasPlacedModels.value = true

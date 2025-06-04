@@ -22,6 +22,7 @@ import kotlin.math.floor
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.nativeCanvas
 import com.example.arlearner2.ui.theme.navigation.ARCameraScreen
+import com.example.arlearner2.util.GlobalKit
 
 fun filterDecimalInput(input: String): String {
     return input.filterIndexed { index, c ->
@@ -393,6 +394,7 @@ fun RoofInpotScreen(navController: NavController, weatherViewModel: WeatherViewM
                             if (recommendedOutput >= dailyKwhDemand && recommendedOutput > bestOutputLimited) {
                                 bestPanel = panel
                                 bestOutputLimited = recommendedOutput
+                                GlobalKit.bestLimitedCount = recommendedCount
                                 bestLimitedCount = recommendedCount
                             }
                         }
