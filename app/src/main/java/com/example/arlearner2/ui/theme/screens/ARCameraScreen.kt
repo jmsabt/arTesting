@@ -5,9 +5,9 @@ import android.view.MotionEvent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,17 +36,8 @@ import kotlinx.coroutines.delay
 import java.nio.FloatBuffer
 import kotlin.math.floor
 import kotlin.math.sqrt
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.layout.Arrangement
 
-
-// Data class for solar panel modelee
+// Data class for solar panel models
 data class SolarPanelModel(val name: String, val modelPath: String)
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
@@ -71,7 +62,6 @@ fun ARCameraScreen(navController: NavController) {
     val hasPlacedModels = remember { mutableStateOf(false) }
     val placementFeedback = remember { mutableStateOf<String?>(null) }
     val scrollState = rememberScrollState()
-
 
     // List of available solar panel models
     val solarPanelModels = listOf(
@@ -255,7 +245,7 @@ fun ARCameraScreen(navController: NavController) {
                             selectedPanel.value = panel
                             hasPlacedModels.value = false // Allow placement again
                             childNodes.clear() // Remove previously placed models
-                            modelInstance.clear() // Optional: clear model instances
+                            modelInstance.clear() // Clear model instances
                         },
                         modifier = Modifier
                             .wrapContentWidth()
