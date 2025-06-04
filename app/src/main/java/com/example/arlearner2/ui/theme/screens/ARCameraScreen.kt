@@ -84,10 +84,6 @@ fun ARCameraScreen(navController: NavController) {
 
     // Currently selected panel state
     val selectedPanel = remember { mutableStateOf(solarPanelModels.first()) }
-
-    // Model path from selected panel
-    val modelPath = selectedPanel.value.modelPath
-
     val modelSize = 0.2f
     val spacing = 0.1f
     val totalModelSize = modelSize + spacing
@@ -166,7 +162,7 @@ fun ARCameraScreen(navController: NavController) {
                                             materialLoader,
                                             modelInstance,
                                             it,
-                                            modelPath,
+                                            selectedPanel.value.modelPath,
                                             modelSize,
                                             spacing,
                                             gridSize * gridSize
@@ -228,7 +224,9 @@ fun ARCameraScreen(navController: NavController) {
                     "Surface Area: %.2f m²".format(area),
                     color = Color.White,
                     fontSize = 16.sp,
-                    modifier = Modifier.background(Color.Black.copy(alpha = 0.7f)).padding(8.dp)
+                    modifier = Modifier
+                        .background(Color.Black.copy(alpha = 0.7f))
+                        .padding(8.dp)
                 )
             }
             placementFeedback.value?.let { feedback ->
@@ -236,7 +234,9 @@ fun ARCameraScreen(navController: NavController) {
                     feedback,
                     color = Color.White,
                     fontSize = 16.sp,
-                    modifier = Modifier.background(Color.Black.copy(alpha = 0.7f)).padding(8.dp)
+                    modifier = Modifier
+                        .background(Color.Black.copy(alpha = 0.7f))
+                        .padding(8.dp)
                 )
             }
 
@@ -251,7 +251,12 @@ fun ARCameraScreen(navController: NavController) {
             ) {
                 solarPanelModels.forEach { panel ->
                     Button(
-                        onClick = { selectedPanel.value = panel },
+                        onClick = {
+                            selectedPanel.value = panel
+                            hasPlacedModels.value = false // Allow placement again
+                            childNodes.clear() // Remove previously placed models
+                            modelInstance.clear() // Optional: clear model instances
+                        },
                         modifier = Modifier
                             .wrapContentWidth()
                             .padding(vertical = 4.dp),
