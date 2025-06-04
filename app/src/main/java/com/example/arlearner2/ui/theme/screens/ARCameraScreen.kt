@@ -1,5 +1,6 @@
 package com.example.arlearner2.ui.theme.screens
 
+import android.util.Log
 import android.os.Build
 import android.view.MotionEvent
 import androidx.annotation.RequiresApi
@@ -246,6 +247,8 @@ fun ARCameraScreen(navController: NavController) {
                             hasPlacedModels.value = false // Allow placement again
                             childNodes.clear() // Remove previously placed models
                             modelInstance.clear() // Clear model instances
+                            Log.d("ARCameraScreen", "Selected panel changed to: ${selectedPanel}")
+                            // Or println("Selected panel changed to: ${panel.name}")
                         },
                         modifier = Modifier
                             .wrapContentWidth()
